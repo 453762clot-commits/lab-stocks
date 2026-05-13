@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-[#0f172a] text-slate-200;
+    }
+}
+
+.glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl;
+}
+
+.gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400;
+}
+
+.stadium-map-container {
+    perspective: 1000px;
+}
+
+.stadium-map-inner {
+    transform: rotateX(20deg);
+}
+
+@keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

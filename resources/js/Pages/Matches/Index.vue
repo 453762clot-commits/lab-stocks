@@ -8,42 +8,84 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Próximos Partidos" />
+    <Head title="Cartelera de Partidos" />
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Próximos Partidos
-            </h2>
+            <div class="flex justify-between items-end">
+                <div>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-1">Experiencia LAB Stocks</p>
+                    <h2 class="font-black text-4xl text-white leading-tight">
+                        Próximos <span class="gradient-text">Eventos</span>
+                    </h2>
+                </div>
+                <div class="hidden md:block text-right">
+                    <span class="text-slate-400 text-sm">Mostrando {{ matches.length }} partidos disponibles</span>
+                </div>
+            </div>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div v-for="match in matches" :key="match.id" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">{{ match.competition }}</span>
-                                <span class="text-sm text-gray-500 dark:text-gray-400">{{ new Date(match.match_date).toLocaleDateString() }}</span>
-                            </div>
-                            <div class="flex items-center justify-center space-x-4 mb-6">
-                                <div class="text-center w-1/3">
-                                    <div class="text-lg font-bold text-gray-900 dark:text-white">{{ match.home_team.name }}</div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div v-for="match in matches" :key="match.id" class="group relative overflow-hidden rounded-3xl bg-slate-900 border border-white/5 hover:border-blue-500/50 transition-all duration-500 shadow-2xl">
+                        <!-- Background Image with Overlay -->
+                        <div class="absolute inset-0 z-0">
+                            <img src="/images/stadium_hero.png" class="w-full h-full object-cover opacity-30 group-hover:opacity-40 group-hover:scale-110 transition-all duration-700" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/80 to-transparent"></div>
+                        </div>
+
+                        <div class="relative z-10 p-8 flex flex-col h-full justify-between min-h-[400px]">
+                            <div>
+                                <div class="flex justify-between items-start mb-8">
+                                    <span class="bg-blue-600/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full border border-blue-500/30">
+                                        {{ match.competition }}
+                                    </span>
+                                    <div class="text-right">
+                                        <div class="text-white font-bold text-xl">{{ new Date(match.match_date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }) }}</div>
+                                        <div class="text-slate-400 text-xs uppercase tracking-widest">{{ new Date(match.match_date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) }}</div>
+                                    </div>
                                 </div>
-                                <div class="text-2xl font-black text-gray-400">VS</div>
-                                <div class="text-center w-1/3">
-                                    <div class="text-lg font-bold text-gray-900 dark:text-white">{{ match.away_team.name }}</div>
+
+                                <div class="flex items-center justify-between space-x-4 mb-8 mt-4">
+                                    <div class="flex-1 text-center">
+                                        <div class="w-16 h-16 mx-auto mb-3 bg-white/5 rounded-full flex items-center justify-center border border-white/10 group-hover:border-blue-500/50 transition-colors">
+                                            <span class="text-2xl font-black text-white">{{ match.home_team.name[0] }}</span>
+                                        </div>
+                                        <h3 class="text-xl font-black text-white uppercase tracking-tight">{{ match.home_team.name }}</h3>
+                                    </div>
+
+                                    <div class="flex flex-col items-center">
+                                        <div class="text-3xl font-black italic text-blue-500 mb-1">VS</div>
+                                        <div class="h-10 w-[1px] bg-gradient-to-b from-blue-500 to-transparent"></div>
+                                    </div>
+
+                                    <div class="flex-1 text-center">
+                                        <div class="w-16 h-16 mx-auto mb-3 bg-white/5 rounded-full flex items-center justify-center border border-white/10 group-hover:border-blue-500/50 transition-colors">
+                                            <span class="text-2xl font-black text-white">{{ match.away_team.name[0] }}</span>
+                                        </div>
+                                        <h3 class="text-xl font-black text-white uppercase tracking-tight">{{ match.away_team.name }}</h3>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="text-sm text-gray-600 dark:text-gray-300 mb-4 flex items-center">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                {{ match.stadium.name }}
-                            </div>
-                            <div class="flex justify-between items-center mt-6">
-                                <span class="text-2xl font-bold text-green-600 dark:text-green-400">Desde {{ match.base_price }}€</span>
-                                <Link :href="route('matches.show', match.id)" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                    Comprar Entradas
-                                </Link>
+
+                            <div class="flex items-end justify-between pt-6 border-t border-white/5">
+                                <div>
+                                    <p class="text-slate-400 text-[10px] uppercase tracking-widest mb-1">Ubicación</p>
+                                    <p class="text-white font-bold flex items-center">
+                                        <svg class="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                                        {{ match.stadium.name }}
+                                    </p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-slate-400 text-[10px] uppercase tracking-widest mb-1 text-right">Entradas desde</p>
+                                    <div class="flex items-center space-x-4">
+                                        <span class="text-3xl font-black text-white">{{ match.base_price }}€</span>
+                                        <Link :href="route('matches.show', match.id)" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-blue-600/30 active:scale-95">
+                                            Reservar
+                                        </Link>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\MatchSeat;
 use App\Models\Ticket;
 use App\Services\LoyaltyService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;

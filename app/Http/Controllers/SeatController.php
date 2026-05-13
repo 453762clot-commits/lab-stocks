@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Services\SeatService;
-use Illuminate\Http\Request;
 
 class SeatController extends Controller
 {
