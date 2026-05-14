@@ -14,9 +14,10 @@ const form = useForm({
 });
 
 const selectSeat = (seat, sector) => {
-    if (seat.match_seats[0].status === 'available') {
+    const matchSeat = seat.match_seats?.[0];
+    if (matchSeat && matchSeat.status === 'available') {
         selectedSeat.value = { ...seat, sector };
-        form.match_seat_id = seat.match_seats[0].id;
+        form.match_seat_id = matchSeat.id;
     }
 };
 
@@ -50,7 +51,7 @@ const lockAndBuy = () => {
                 </div>
                 <div class="text-right">
                     <p class="text-blue-400 font-bold text-xs uppercase tracking-widest">{{ match.competition }}</p>
-                    <p class="text-slate-400 text-sm">{{ match.stadium.name }}</p>
+                    <p class="text-slate-400 text-sm">{{ match.stadium?.name }}</p>
                 </div>
             </div>
         </template>
@@ -102,7 +103,7 @@ const lockAndBuy = () => {
 
                                 <!-- Sectors -->
                                 <div class="space-y-12">
-                                    <div v-for="sector in match.stadium.sectors" :key="sector.id" class="relative">
+                                    <div v-for="sector in match.stadium?.sectors" :key="sector.id" class="relative">
                                         <div class="flex items-center justify-between mb-4">
                                             <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Sector {{ sector.name }}</span>
                                             <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Multiplicador x{{ sector.price_modifier.toFixed(2) }}</span>
@@ -112,15 +113,15 @@ const lockAndBuy = () => {
                                                 v-for="seat in sector.seats"
                                                 :key="seat.id"
                                                 @click="selectSeat(seat, sector)"
-                                                :disabled="seat.match_seats[0].status !== 'available'"
+                                                :disabled="seat.match_seats?.[0]?.status !== 'available'"
                                                 class="relative aspect-square rounded-lg transition-all duration-300 transform hover:scale-125 group"
                                                 :class="{
-                                                    'bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-600/50': seat.match_seats[0].status === 'available' && selectedSeat?.id !== seat.id,
-                                                    'bg-slate-800 border border-white/5 opacity-30 cursor-not-allowed': seat.match_seats[0].status !== 'available',
+                                                    'bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-600/50': seat.match_seats?.[0]?.status === 'available' && selectedSeat?.id !== seat.id,
+                                                    'bg-slate-800 border border-white/5 opacity-30 cursor-not-allowed': seat.match_seats?.[0]?.status !== 'available',
                                                     'bg-emerald-500 border-2 border-white shadow-xl shadow-emerald-500/50 scale-125 z-20': selectedSeat?.id === seat.id
                                                 }"
                                             >
-                                                <div v-if="seat.match_seats[0].status === 'available'" class="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-slate-900 text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-xl">
+                                                <div v-if="seat.match_seats?.[0]?.status === 'available'" class="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-slate-900 text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-xl">
                                                     {{ seat.row }} - {{ seat.number }}
                                                 </div>
                                             </button>
