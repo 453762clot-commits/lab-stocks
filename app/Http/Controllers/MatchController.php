@@ -11,8 +11,10 @@ class MatchController extends Controller
 {
     public function index()
     {
-        // Debug: get ALL matches without any relation or filter
-        $matches = FootballMatch::all();
+        // Get matches with relations
+        $matches = FootballMatch::with(['homeTeam', 'awayTeam', 'stadium'])
+            ->orderBy('match_date')
+            ->get();
 
         return Inertia::render('Matches/Index', [
             'matches' => $matches

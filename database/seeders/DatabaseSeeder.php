@@ -74,6 +74,7 @@ class DatabaseSeeder extends Seeder
                     'stadium_id' => $stadium->id,
                     'name' => $sData['name'],
                     'price_modifier' => $sData['price_modifier'],
+                    'capacity' => 100, // Añadido para evitar error de campo obligatorio
                 ]);
 
                 for ($i = 1; $i <= 2; $i++) {
