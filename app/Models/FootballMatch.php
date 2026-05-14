@@ -19,6 +19,11 @@ class FootballMatch extends Model
         'image_path',
     ];
 
+    protected $casts = [
+        'match_date' => 'datetime',
+        'base_price' => 'decimal:2',
+    ];
+
     public function homeTeam()
     {
         return $this->belongsTo(Team::class, 'home_team_id');

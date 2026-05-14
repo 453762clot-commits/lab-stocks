@@ -109,11 +109,14 @@ class DatabaseSeeder extends Seeder
 
         foreach ($matches as $mData) {
             $match = FootballMatch::create($mData);
+            dump("Partido creado: " . $match->competition);
             
             // Asignar asientos del estadio correspondiente
             $stadiumSeats = Seat::whereHas('sector', function($q) use ($match) {
                 $q->where('stadium_id', $match->stadium_id);
             })->get();
+            
+            dump("Asientos encontrados para este partido: " . $stadiumSeats->count());
 
             foreach ($stadiumSeats as $seat) {
                 MatchSeat::create([
@@ -123,5 +126,6 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+        dump("Seeder finalizado correctamente");
     }
 }
