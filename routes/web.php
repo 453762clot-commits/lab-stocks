@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/seats/lock', [SeatController::class, 'lock'])->name('seats.lock');
 
     // Purchases
+    Route::post('/checkout', [PurchaseController::class, 'checkout'])->name('purchase.checkout');
     Route::post('/purchase', [PurchaseController::class, 'store'])->name('purchase.store');
     Route::get('/tickets/{ticket}', [PurchaseController::class, 'show'])->name('tickets.show');
 

@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const props = defineProps({
@@ -32,7 +32,9 @@ const lockAndBuy = () => {
     axios.post(route('seats.lock'), {
         match_seat_ids: form.match_seat_ids
     }).then(response => {
-        form.post(route('purchase.store'));
+        router.post(route('purchase.checkout'), {
+            match_seat_ids: form.match_seat_ids
+        });
     }).catch(error => {
         alert(error.response?.data?.message || 'Error al reservar los asientos');
     });
