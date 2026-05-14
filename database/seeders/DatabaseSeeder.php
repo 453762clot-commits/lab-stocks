@@ -17,7 +17,18 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Usuarios (Usando 'customer' para coincidir con LoyaltyService)
+        // LIMPIEZA TOTAL
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        MatchSeat::truncate();
+        FootballMatch::truncate();
+        Seat::truncate();
+        Sector::truncate();
+        Stadium::truncate();
+        Team::truncate();
+        User::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // 1. Usuarios
         User::create([
             'name' => 'Admin User',
             'email' => 'admin@labstocks.com',
@@ -41,7 +52,7 @@ class DatabaseSeeder extends Seeder
             'points' => 280,
         ]);
 
-        // 2. Equipos
+        // 2. Equipos (Los IDs volverán a ser 1, 2, 3...)
         $teamsData = [
             ['name' => 'FC Barcelona', 'logo_path' => 'barca.png'],
             ['name' => 'Real Madrid', 'logo_path' => 'madrid.png'],
@@ -93,26 +104,26 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // 4. Partidos
+        // 4. Partidos (Garantizamos que los IDs 1 y 2 existen)
         $matchesData = [
             [
                 'home_team_id' => 1, 'away_team_id' => 2,
-                'stadium_id' => $createdStadiums[0]->id, 'match_date' => now()->addDays(7),
+                'stadium_id' => 1, 'match_date' => now()->addDays(7),
                 'base_price' => 120.0, 'competition' => 'La Liga', 'status' => 'scheduled',
             ],
             [
                 'home_team_id' => 3, 'away_team_id' => 1,
-                'stadium_id' => $createdStadiums[2]->id, 'match_date' => now()->addDays(10),
+                'stadium_id' => 3, 'match_date' => now()->addDays(10),
                 'base_price' => 150.0, 'competition' => 'Champions League', 'status' => 'scheduled',
             ],
             [
                 'home_team_id' => 2, 'away_team_id' => 4,
-                'stadium_id' => $createdStadiums[1]->id, 'match_date' => now()->addDays(12),
+                'stadium_id' => 2, 'match_date' => now()->addDays(12),
                 'base_price' => 140.0, 'competition' => 'Champions League', 'status' => 'scheduled',
             ],
             [
                 'home_team_id' => 5, 'away_team_id' => 3,
-                'stadium_id' => $createdStadiums[2]->id, 'match_date' => now()->addDays(15),
+                'stadium_id' => 3, 'match_date' => now()->addDays(15),
                 'base_price' => 95.0, 'competition' => 'Premier League', 'status' => 'scheduled',
             ],
         ];

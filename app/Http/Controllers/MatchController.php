@@ -12,7 +12,7 @@ class MatchController extends Controller
     public function index()
     {
         $matches = FootballMatch::with(['homeTeam', 'awayTeam', 'stadium'])
-            ->where('match_date', '>=', now())
+            // ->where('match_date', '>=', now())
             ->orderBy('match_date')
             ->get();
 
