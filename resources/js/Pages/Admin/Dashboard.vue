@@ -32,7 +32,7 @@ defineProps({
                     </div>
                     <div class="bg-white/5 border border-white/10 p-8 rounded-[2rem] hover:border-emerald-500/50 transition-colors group">
                         <div class="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4">Recaudación Total</div>
-                        <div class="text-4xl font-black text-white italic tracking-tighter">{{ (stats?.total_revenue || 0).toFixed(2) }}€</div>
+                        <div class="text-4xl font-black text-white italic tracking-tighter">{{ Number(stats?.total_revenue || 0).toFixed(2) }}€</div>
                     </div>
                     <div class="bg-white/5 border border-white/10 p-8 rounded-[2rem] hover:border-purple-500/50 transition-colors group">
                         <div class="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-4">Usuarios Registrados</div>

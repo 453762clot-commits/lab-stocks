@@ -106,7 +106,7 @@ const lockAndBuy = () => {
                                     <div v-for="sector in match.stadium?.sectors" :key="sector.id" class="relative">
                                         <div class="flex items-center justify-between mb-4">
                                             <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Sector {{ sector.name }}</span>
-                                            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Multiplicador x{{ sector.price_modifier.toFixed(2) }}</span>
+                                            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Multiplicador x{{ Number(sector.price_modifier).toFixed(2) }}</span>
                                         </div>
                                         <div class="grid grid-cols-10 gap-3 justify-center">
                                             <button
@@ -150,7 +150,7 @@ const lockAndBuy = () => {
                                 <div class="pt-6 border-t border-white/10 space-y-4">
                                     <div class="flex justify-between items-end">
                                         <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Inversión Total</p>
-                                        <p class="text-3xl font-black gradient-text">{{ (match.base_price * selectedSeat.sector.price_modifier).toFixed(2) }}€</p>
+                                        <p class="text-3xl font-black gradient-text">{{ (Number(match.base_price) * Number(selectedSeat.sector.price_modifier)).toFixed(2) }}€</p>
                                     </div>
                                     <button
                                         @click="lockAndBuy"
