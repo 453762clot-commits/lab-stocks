@@ -146,10 +146,15 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        $seats = Seat::all();
         foreach ($matchesData as $mData) {
             $match = FootballMatch::create($mData);
-            foreach ($seats as $seat) {
+            
+            // Get only seats from the stadium where the match is played
+            $stadiumSeats = Seat::whereHas('sector', function($query) use ($match) {
+                $query->where('stadium_id', $match->stadium_id);
+            })->get();
+
+            foreach ($stadiumSeats as $seat) {
                 MatchSeat::create([
                     'match_id' => $match->id,
                     'seat_id' => $seat->id,
