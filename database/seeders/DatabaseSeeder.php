@@ -29,104 +29,96 @@ class DatabaseSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // 2. Usuarios
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@labstocks.com',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-        ]);
-
-        $user1 = User::create([
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'customer',
-            'points' => 150,
-        ]);
-
-        $user2 = User::create([
-            'name' => 'Jane Smith',
-            'email' => 'jane@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'customer',
-            'points' => 320,
-        ]);
+        User::create(['name' => 'Admin User', 'email' => 'admin@labstocks.com', 'password' => Hash::make('password'), 'role' => 'admin']);
+        User::create(['name' => 'John Doe', 'email' => 'john@example.com', 'password' => Hash::make('password'), 'role' => 'customer', 'points' => 150]);
+        User::create(['name' => 'Jane Smith', 'email' => 'jane@example.com', 'password' => Hash::make('password'), 'role' => 'customer', 'points' => 450]);
 
         // 3. Equipos
-        $barca = Team::create(['name' => 'FC Barcelona', 'logo_path' => 'barca.png']);
-        $madrid = Team::create(['name' => 'Real Madrid', 'logo_path' => 'madrid.png']);
-        $city = Team::create(['name' => 'Manchester City', 'logo_path' => 'city.png']);
-        $bayern = Team::create(['name' => 'Bayern Munich', 'logo_path' => 'bayern.png']);
+        $teams = [
+            'barca' => Team::create(['name' => 'FC Barcelona', 'logo_path' => 'barca.png']),
+            'madrid' => Team::create(['name' => 'Real Madrid', 'logo_path' => 'madrid.png']),
+            'city' => Team::create(['name' => 'Manchester City', 'logo_path' => 'city.png']),
+            'bayern' => Team::create(['name' => 'Bayern Munich', 'logo_path' => 'bayern.png']),
+            'psg' => Team::create(['name' => 'Paris Saint-Germain', 'logo_path' => 'psg.png']),
+            'liverpool' => Team::create(['name' => 'Liverpool FC', 'logo_path' => 'liverpool.png']),
+            'milan' => Team::create(['name' => 'AC Milan', 'logo_path' => 'milan.png']),
+            'inter' => Team::create(['name' => 'Inter Milan', 'logo_path' => 'inter.png']),
+            'chelsea' => Team::create(['name' => 'Chelsea FC', 'logo_path' => 'chelsea.png']),
+            'arsenal' => Team::create(['name' => 'Arsenal FC', 'logo_path' => 'arsenal.png']),
+        ];
 
         // 4. Estadios
-        $campNou = Stadium::create(['name' => 'Camp Nou', 'location' => 'Barcelona', 'capacity' => 99354]);
-        $bernabeu = Stadium::create(['name' => 'Santiago Bernabéu', 'location' => 'Madrid', 'capacity' => 81044]);
+        $stadiums = [
+            'camp_nou' => Stadium::create(['name' => 'Camp Nou', 'location' => 'Barcelona', 'capacity' => 99354]),
+            'bernabeu' => Stadium::create(['name' => 'Santiago Bernabéu', 'location' => 'Madrid', 'capacity' => 81044]),
+            'anfield' => Stadium::create(['name' => 'Anfield', 'location' => 'Liverpool', 'capacity' => 54000]),
+            'san_siro' => Stadium::create(['name' => 'San Siro', 'location' => 'Milán', 'capacity' => 80000]),
+            'parc_des_princes' => Stadium::create(['name' => 'Parc des Princes', 'location' => 'París', 'capacity' => 47000]),
+        ];
 
-        $stadiums = [$campNou, $bernabeu];
-        $sectors = [
+        $sectorTypes = [
             ['name' => 'Tribuna VIP', 'price_modifier' => 2.5],
-            ['name' => 'Lateral', 'price_modifier' => 1.2],
+            ['name' => 'Lateral Alta', 'price_modifier' => 1.5],
+            ['name' => 'Gol Fondo', 'price_modifier' => 1.0],
         ];
 
         foreach ($stadiums as $stadium) {
-            foreach ($sectors as $sData) {
+            foreach ($sectorTypes as $st) {
                 $sector = Sector::create([
                     'stadium_id' => $stadium->id,
-                    'name' => $sData['name'],
-                    'price_modifier' => $sData['price_modifier'],
-                    'capacity' => 100, // Añadido para evitar error de campo obligatorio
+                    'name' => $st['name'],
+                    'price_modifier' => $st['price_modifier'],
+                    'capacity' => 50,
                 ]);
 
                 for ($i = 1; $i <= 2; $i++) {
                     for ($j = 1; $j <= 5; $j++) {
-                        Seat::create([
-                            'sector_id' => $sector->id,
-                            'row' => $i,
-                            'number' => $j,
-                        ]);
+                        Seat::create(['sector_id' => $sector->id, 'row' => $i, 'number' => $j]);
                     }
                 }
             }
         }
 
         // 5. Partidos
-        $matches = [
-            [
-                'home_team_id' => $barca->id, 'away_team_id' => $madrid->id,
-                'stadium_id' => $campNou->id, 'match_date' => now()->addDays(7),
-                'base_price' => 120.0, 'competition' => 'La Liga', 'status' => 'scheduled',
-            ],
-            [
-                'home_team_id' => $city->id, 'away_team_id' => $barca->id,
-                'stadium_id' => $campNou->id, 'match_date' => now()->addDays(10),
-                'base_price' => 150.0, 'competition' => 'Champions League', 'status' => 'scheduled',
-            ],
-            [
-                'home_team_id' => $madrid->id, 'away_team_id' => $bayern->id,
-                'stadium_id' => $bernabeu->id, 'match_date' => now()->addDays(12),
-                'base_price' => 140.0, 'competition' => 'Champions League', 'status' => 'scheduled',
-            ],
+        $matchesData = [
+            // Champions League
+            ['h' => 'barca', 'a' => 'city', 's' => 'camp_nou', 'p' => 150, 'c' => 'Champions League', 'd' => 5],
+            ['h' => 'madrid', 'a' => 'bayern', 's' => 'bernabeu', 'p' => 160, 'c' => 'Champions League', 'd' => 7],
+            ['h' => 'psg', 'a' => 'liverpool', 's' => 'parc_des_princes', 'p' => 140, 'c' => 'Champions League', 'd' => 10],
+            ['h' => 'milan', 'a' => 'madrid', 's' => 'san_siro', 'p' => 130, 'c' => 'Champions League', 'd' => 12],
+            
+            // Premier League
+            ['h' => 'liverpool', 'a' => 'city', 's' => 'anfield', 'p' => 95, 'c' => 'Premier League', 'd' => 8],
+            ['h' => 'chelsea', 'a' => 'arsenal', 's' => 'anfield', 'p' => 85, 'c' => 'Premier League', 'd' => 15],
+            ['h' => 'city', 'a' => 'chelsea', 's' => 'camp_nou', 'p' => 110, 'c' => 'Premier League', 'd' => 18],
+
+            // La Liga
+            ['h' => 'barca', 'a' => 'madrid', 's' => 'camp_nou', 'p' => 180, 'c' => 'La Liga', 'd' => 20],
+            ['h' => 'madrid', 'a' => 'barca', 's' => 'bernabeu', 'p' => 180, 'c' => 'La Liga', 'd' => 45],
+
+            // Serie A
+            ['h' => 'milan', 'a' => 'inter', 's' => 'san_siro', 'p' => 120, 'c' => 'Serie A', 'd' => 25],
+            ['h' => 'inter', 'a' => 'milan', 's' => 'san_siro', 'p' => 120, 'c' => 'Serie A', 'd' => 60],
         ];
 
-        foreach ($matches as $mData) {
-            $match = FootballMatch::create($mData);
-            dump("Partido creado: " . $match->competition);
-            
-            // Asignar asientos del estadio correspondiente
+        foreach ($matchesData as $m) {
+            $match = FootballMatch::create([
+                'home_team_id' => $teams[$m['h']]->id,
+                'away_team_id' => $teams[$m['a']]->id,
+                'stadium_id' => $stadiums[$m['s']]->id,
+                'match_date' => now()->addDays($m['d']),
+                'base_price' => $m['p'],
+                'competition' => $m['c'],
+                'status' => 'scheduled',
+            ]);
+
             $stadiumSeats = Seat::whereHas('sector', function($q) use ($match) {
                 $q->where('stadium_id', $match->stadium_id);
             })->get();
-            
-            dump("Asientos encontrados para este partido: " . $stadiumSeats->count());
 
             foreach ($stadiumSeats as $seat) {
-                MatchSeat::create([
-                    'match_id' => $match->id,
-                    'seat_id' => $seat->id,
-                    'status' => 'available',
-                ]);
+                MatchSeat::create(['match_id' => $match->id, 'seat_id' => $seat->id, 'status' => 'available']);
             }
         }
-        dump("Seeder finalizado correctamente");
     }
 }
