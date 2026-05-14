@@ -1,6 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
+
+defineProps({
+    userRank: Number,
+    activeTicketsCount: Number,
+    points: Number,
+});
 </script>
 
 <template>
@@ -48,7 +54,7 @@ import { Head } from '@inertiajs/vue3';
                             <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
                         </div>
                         <h4 class="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Puntos Acumulados</h4>
-                        <p class="text-3xl font-black text-white">{{ $page.props.auth.user.points }} <span class="text-sm text-slate-500 uppercase tracking-tighter ml-1">pts</span></p>
+                        <p class="text-3xl font-black text-white">{{ points }} <span class="text-sm text-slate-500 uppercase tracking-tighter ml-1">pts</span></p>
                     </div>
 
                     <div class="bg-white/5 border border-white/10 p-8 rounded-[2rem] hover:border-emerald-500/50 transition-colors group">
@@ -56,7 +62,7 @@ import { Head } from '@inertiajs/vue3';
                             <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                         </div>
                         <h4 class="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Entradas Activas</h4>
-                        <p class="text-3xl font-black text-white">0 <span class="text-sm text-slate-500 uppercase tracking-tighter ml-1">tickets</span></p>
+                        <p class="text-3xl font-black text-white">{{ activeTicketsCount }} <span class="text-sm text-slate-500 uppercase tracking-tighter ml-1">tickets</span></p>
                     </div>
 
                     <div class="bg-white/5 border border-white/10 p-8 rounded-[2rem] hover:border-yellow-500/50 transition-colors group">
@@ -64,7 +70,7 @@ import { Head } from '@inertiajs/vue3';
                             <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                         </div>
                         <h4 class="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Posición Ranking</h4>
-                        <p class="text-3xl font-black text-white">#--</p>
+                        <p class="text-3xl font-black text-white">#{{ userRank }}</p>
                     </div>
                 </div>
             </div>

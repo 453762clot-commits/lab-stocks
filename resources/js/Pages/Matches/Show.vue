@@ -7,29 +7,34 @@ const props = defineProps({
     match: Object,
 });
 
-const selectedSeat = ref(null);
+const selectedSeats = ref([]);
 
 const form = useForm({
-    match_seat_id: null,
+    match_seat_ids: [],
 });
 
 const selectSeat = (seat, sector) => {
     const matchSeat = seat.match_seats?.[0];
     if (matchSeat && matchSeat.status === 'available') {
-        selectedSeat.value = { ...seat, sector };
-        form.match_seat_id = matchSeat.id;
+        const index = selectedSeats.value.findIndex(s => s.id === seat.id);
+        if (index === -1) {
+            selectedSeats.value.push({ ...seat, sector, match_seat_id: matchSeat.id });
+        } else {
+            selectedSeats.value.splice(index, 1);
+        }
+        form.match_seat_ids = selectedSeats.value.map(s => s.match_seat_id);
     }
 };
 
 const lockAndBuy = () => {
-    if (!form.match_seat_id) return;
+    if (form.match_seat_ids.length === 0) return;
     
     axios.post(route('seats.lock'), {
-        match_seat_id: form.match_seat_id
+        match_seat_ids: form.match_seat_ids
     }).then(response => {
         form.post(route('purchase.store'));
     }).catch(error => {
-        alert(error.response.data.message || 'Error al reservar el asiento');
+        alert(error.response?.data?.message || 'Error al reservar los asientos');
     });
 };
 </script>
@@ -66,7 +71,7 @@ const lockAndBuy = () => {
                             <h4 class="text-white font-black uppercase tracking-widest text-xs mb-6">Estado de Asientos</h4>
                             <div class="space-y-4">
                                 <div class="flex items-center space-x-3 text-sm">
-                                    <div class="w-4 h-4 rounded bg-blue-500 shadow-lg shadow-blue-500/50"></div>
+                                    <div class="w-4 h-4 rounded bg-blue-500/20 border border-blue-500/50"></div>
                                     <span class="text-slate-300">Disponible</span>
                                 </div>
                                 <div class="flex items-center space-x-3 text-sm">
@@ -74,7 +79,7 @@ const lockAndBuy = () => {
                                     <span class="text-slate-300">Seleccionado</span>
                                 </div>
                                 <div class="flex items-center space-x-3 text-sm">
-                                    <div class="w-4 h-4 rounded bg-slate-700"></div>
+                                    <div class="w-4 h-4 rounded bg-slate-800 opacity-30"></div>
                                     <span class="text-slate-500 line-through">Ocupado</span>
                                 </div>
                             </div>
@@ -83,7 +88,7 @@ const lockAndBuy = () => {
                         <div class="glass-card p-6 rounded-3xl border-l-4 border-blue-500">
                             <h4 class="text-white font-black uppercase tracking-widest text-xs mb-2">Información de Precios</h4>
                             <p class="text-slate-400 text-xs leading-relaxed">
-                                El precio final se calcula multiplicando el precio base del partido ({{ match.base_price }}€) por el multiplicador del sector seleccionado.
+                                El precio final se calcula multiplicando el precio base del partido ({{ Number(match.base_price).toFixed(2) }}€) por el multiplicador del sector. Los sectores con mejor visibilidad tienen un multiplicador más alto.
                             </p>
                         </div>
                     </div>
@@ -116,9 +121,9 @@ const lockAndBuy = () => {
                                                 :disabled="seat.match_seats?.[0]?.status !== 'available'"
                                                 class="relative aspect-square rounded-lg transition-all duration-300 transform hover:scale-125 group"
                                                 :class="{
-                                                    'bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-600/50': seat.match_seats?.[0]?.status === 'available' && selectedSeat?.id !== seat.id,
+                                                    'bg-blue-600/20 border border-blue-500/50 hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-600/50': seat.match_seats?.[0]?.status === 'available' && !selectedSeats.some(s => s.id === seat.id),
                                                     'bg-slate-800 border border-white/5 opacity-30 cursor-not-allowed': seat.match_seats?.[0]?.status !== 'available',
-                                                    'bg-emerald-500 border-2 border-white shadow-xl shadow-emerald-500/50 scale-125 z-20': selectedSeat?.id === seat.id
+                                                    'bg-emerald-500 border-2 border-white shadow-xl shadow-emerald-500/50 scale-125 z-20': selectedSeats.some(s => s.id === seat.id)
                                                 }"
                                             >
                                                 <div v-if="seat.match_seats?.[0]?.status === 'available'" class="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-slate-900 text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap shadow-xl">
@@ -137,20 +142,26 @@ const lockAndBuy = () => {
                         <div class="glass-card p-8 rounded-[2rem] sticky top-8 border-t-4 border-emerald-500 shadow-emerald-500/10">
                             <h3 class="text-white font-black text-xl mb-8 uppercase tracking-tighter">Resumen</h3>
                             
-                            <div v-if="selectedSeat" class="space-y-6">
-                                <div class="space-y-1">
-                                    <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Zona Seleccionada</p>
-                                    <p class="text-white font-bold text-lg">{{ selectedSeat.sector.name }}</p>
-                                </div>
-                                <div class="space-y-1">
-                                    <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Localidad</p>
-                                    <p class="text-white font-bold text-lg">{{ selectedSeat.row }} · {{ selectedSeat.number }}</p>
+                            <div v-if="selectedSeats.length > 0" class="space-y-6">
+                                <div class="max-h-60 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+                                    <div v-for="seat in selectedSeats" :key="seat.id" class="p-4 bg-white/5 rounded-2xl border border-white/5 flex justify-between items-center">
+                                        <div>
+                                            <p class="text-white font-bold text-sm">{{ seat.sector.name }}</p>
+                                            <p class="text-slate-500 text-[10px] uppercase font-black tracking-widest">{{ seat.row }} · {{ seat.number }}</p>
+                                        </div>
+                                        <p class="text-blue-400 font-black italic tracking-tighter">{{ (Number(match.base_price) * Number(seat.sector.price_modifier)).toFixed(2) }}€</p>
+                                    </div>
                                 </div>
 
                                 <div class="pt-6 border-t border-white/10 space-y-4">
                                     <div class="flex justify-between items-end">
-                                        <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Inversión Total</p>
-                                        <p class="text-3xl font-black gradient-text">{{ (Number(match.base_price) * Number(selectedSeat.sector.price_modifier)).toFixed(2) }}€</p>
+                                        <div>
+                                            <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Total Entradas: {{ selectedSeats.length }}</p>
+                                            <p class="text-slate-500 text-[10px] font-black uppercase tracking-widest">Inversión Total</p>
+                                        </div>
+                                        <p class="text-3xl font-black gradient-text">
+                                            {{ selectedSeats.reduce((total, s) => total + (Number(match.base_price) * Number(s.sector.price_modifier)), 0).toFixed(2) }}€
+                                        </p>
                                     </div>
                                     <button
                                         @click="lockAndBuy"
@@ -169,7 +180,7 @@ const lockAndBuy = () => {
                                     <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
                                 </div>
                                 <p class="text-slate-400 text-sm font-bold uppercase tracking-tighter leading-tight px-4">
-                                    Selecciona una localidad en el mapa para continuar
+                                    Selecciona una o más localidades para continuar
                                 </p>
                             </div>
                         </div>

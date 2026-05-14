@@ -5,6 +5,7 @@ use App\Http\Controllers\MatchController;
 use App\Http\Controllers\SeatController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RankingController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminMatchController;
 use Illuminate\Foundation\Application;
@@ -16,9 +17,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Matches & Seats
     Route::get('/matches', [MatchController::class, 'index'])->name('matches.index');

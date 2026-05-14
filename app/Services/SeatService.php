@@ -12,26 +12,33 @@ class SeatService
     /**
      * Lock a seat for a user temporarily (10 minutes).
      */
-    public function lockSeat(int $matchSeatId, int $userId): bool
+    public function lockSeats(array $matchSeatIds, int $userId): bool
     {
-        return DB::transaction(function () use ($matchSeatId, $userId) {
-            $seat = MatchSeat::where('id', $matchSeatId)
+        return DB::transaction(function () use ($matchSeatIds, $userId) {
+            $seats = MatchSeat::whereIn('id', $matchSeatIds)
                 ->where('status', 'available')
                 ->lockForUpdate()
-                ->first();
+                ->get();
 
-            if (!$seat) {
+            if ($seats->count() !== count($matchSeatIds)) {
                 return false;
             }
 
-            $seat->update([
-                'status' => 'reserved',
-                'user_id' => $userId,
-                'locked_at' => now(),
-            ]);
+            foreach ($seats as $seat) {
+                $seat->update([
+                    'status' => 'reserved',
+                    'user_id' => $userId,
+                    'locked_at' => now(),
+                ]);
+            }
 
             return true;
         });
+    }
+
+    public function lockSeat(int $matchSeatId, int $userId): bool
+    {
+        return $this->lockSeats([$matchSeatId], $userId);
     }
 
     /**

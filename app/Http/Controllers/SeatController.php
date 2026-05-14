@@ -18,15 +18,16 @@ class SeatController extends Controller
     public function lock(Request $request)
     {
         $request->validate([
-            'match_seat_id' => 'required|exists:match_seats,id',
+            'match_seat_ids' => 'required|array',
+            'match_seat_ids.*' => 'exists:match_seats,id',
         ]);
 
-        $success = $this->seatService->lockSeat($request->match_seat_id, $request->user()->id);
+        $success = $this->seatService->lockSeats($request->match_seat_ids, $request->user()->id);
 
         if ($success) {
-            return response()->json(['message' => 'Seat locked successfully']);
+            return response()->json(['message' => 'Asientos bloqueados correctamente']);
         }
 
-        return response()->json(['message' => 'Seat is already taken or reserved'], 422);
+        return response()->json(['message' => 'Uno o más asientos ya no están disponibles'], 422);
     }
 }

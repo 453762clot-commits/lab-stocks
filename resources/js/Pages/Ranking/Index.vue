@@ -29,6 +29,7 @@ defineProps({
                                 <tr class="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">
                                     <th class="px-8 pb-4">Posición</th>
                                     <th class="px-8 pb-4">Usuario</th>
+                                    <th class="px-8 pb-4">Premio Estacional</th>
                                     <th class="px-8 pb-4 text-right">Puntos Totales</th>
                                 </tr>
                             </thead>
@@ -53,6 +54,20 @@ defineProps({
                                                 <p class="text-white font-bold tracking-tight">{{ user.name }}</p>
                                                 <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Seguidor Elite</p>
                                             </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-6">
+                                        <div v-if="index === 0">
+                                            <span class="px-3 py-1 bg-yellow-500/10 text-yellow-500 text-[10px] font-black rounded-full uppercase tracking-widest border border-yellow-500/20">Abono VIP Gratis</span>
+                                        </div>
+                                        <div v-else-if="index < 3">
+                                            <span class="px-3 py-1 bg-blue-500/10 text-blue-500 text-[10px] font-black rounded-full uppercase tracking-widest border border-blue-500/20">Camiseta Oficial</span>
+                                        </div>
+                                        <div v-else-if="index < 10">
+                                            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black rounded-full uppercase tracking-widest border border-emerald-500/20">Cupón -50% Dto.</span>
+                                        </div>
+                                        <div v-else>
+                                            <span class="text-slate-600 text-[10px] font-bold uppercase tracking-widest italic">Sigue acumulando</span>
                                         </div>
                                     </td>
                                     <td class="px-8 py-6 rounded-r-2xl text-right">

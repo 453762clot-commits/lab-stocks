@@ -25,48 +25,63 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'match_seat_id' => 'required|exists:match_seats,id',
+            'match_seat_ids' => 'required|array',
+            'match_seat_ids.*' => 'exists:match_seats,id',
         ]);
 
-        $matchSeat = MatchSeat::with(['seat.sector', 'match'])->findOrFail($request->match_seat_id);
-
-        if ($matchSeat->status !== 'reserved' || $matchSeat->user_id !== $request->user()->id) {
-            return back()->withErrors(['message' => 'Seat is no longer reserved for you.']);
-        }
-
-        return DB::transaction(function () use ($matchSeat, $request) {
+        return DB::transaction(function () use ($request) {
             $user = $request->user();
-            $basePrice = $matchSeat->match->base_price;
-            $modifier = $matchSeat->seat->sector->price_modifier;
-            $totalPrice = $basePrice * $modifier;
+            $tickets = [];
 
-            // Apply points discount (optional logic)
-            $discount = $this->loyaltyService->calculateDiscount($user, $totalPrice);
-            $finalPrice = $totalPrice - $discount;
+            foreach ($request->match_seat_ids as $seatId) {
+                $matchSeat = MatchSeat::with(['seat.sector', 'match'])->findOrFail($seatId);
 
-            $uuid = Str::uuid();
-            $qrPath = "qrcodes/{$uuid}.svg";
-            
-            // Generate QR (In a real app, this might be a URL to verify the ticket)
-            Storage::disk('public')->put($qrPath, QrCode::format('svg')->size(200)->generate($uuid));
+                if ($matchSeat->status !== 'reserved' || $matchSeat->user_id !== $user->id) {
+                    throw new \Exception("El asiento {$matchSeat->id} ya no está reservado.");
+                }
 
-            $ticket = Ticket::create([
-                'uuid' => $uuid,
-                'user_id' => $user->id,
-                'match_id' => $matchSeat->match_id,
-                'seat_id' => $matchSeat->seat_id,
-                'price_paid' => $finalPrice,
-                'qr_code_path' => $qrPath,
-                'status' => 'valid',
-            ]);
+                $basePrice = $matchSeat->match->base_price;
+                $modifier = $matchSeat->seat->sector->price_modifier;
+                $totalPrice = $basePrice * $modifier;
 
-            $matchSeat->update(['status' => 'sold']);
+                $discount = $this->loyaltyService->calculateDiscount($user, $totalPrice);
+                $finalPrice = $totalPrice - $discount;
 
-            // Award points (1 point per 10€ spent)
-            $pointsEarned = (int)($finalPrice / 10);
-            $this->loyaltyService->addPoints($user, $pointsEarned, "Purchase of ticket {$uuid}");
+                $uuid = Str::uuid();
+                $qrPath = "qrcodes/{$uuid}.svg";
+                
+                Storage::disk('public')->put($qrPath, QrCode::format('svg')->size(200)->generate($uuid));
 
-            return redirect()->route('tickets.show', $ticket);
+                $ticket = Ticket::create([
+                    'uuid' => $uuid,
+                    'user_id' => $user->id,
+                    'match_id' => $matchSeat->match_id,
+                    'seat_id' => $matchSeat->seat_id,
+                    'price_paid' => $finalPrice,
+                    'qr_code_path' => $qrPath,
+                    'status' => 'valid',
+                ]);
+
+                $matchSeat->update(['status' => 'sold']);
+                
+                $pointsEarned = (int)($finalPrice / 10);
+                $this->loyaltyService->addPoints($user, $pointsEarned, "Compra de entrada {$uuid}");
+                
+                $tickets[] = $ticket;
+            }
+
+            // Redirect to the first ticket or a list? 
+            // For now, redirect to the first one to avoid error.
+            return redirect()->route('tickets.show', $tickets[0]);
         });
+    }
+
+    public function show(Ticket $ticket)
+    {
+        $ticket->load(['match.homeTeam', 'match.awayTeam', 'seat.sector', 'user']);
+        
+        return \Inertia\Inertia::render('Tickets/Show', [
+            'ticket' => $ticket
+        ]);
     }
 }

@@ -77,25 +77,50 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Match
-        $match = FootballMatch::create([
-            'home_team_id' => 1,
-            'away_team_id' => 2,
-            'stadium_id' => $stadium->id,
-            'match_date' => now()->addDays(7),
-            'base_price' => 50.0,
-            'competition' => 'La Liga',
-            'status' => 'scheduled',
-        ]);
+        // Matches
+        $matches = [
+            [
+                'home_team_id' => 1, // FC Barcelona
+                'away_team_id' => 2, // Real Madrid
+                'stadium_id' => $stadium->id,
+                'match_date' => now()->addDays(7),
+                'base_price' => 120.0,
+                'competition' => 'La Liga - El Clásico',
+                'status' => 'scheduled',
+            ],
+            [
+                'home_team_id' => 3, // Girona FC
+                'away_team_id' => 4, // RCD Espanyol
+                'stadium_id' => $stadium->id,
+                'match_date' => now()->addDays(14),
+                'base_price' => 45.0,
+                'competition' => 'La Liga - Derby Catalán',
+                'status' => 'scheduled',
+            ],
+            [
+                'home_team_id' => 1, // FC Barcelona
+                'away_team_id' => 3, // Girona FC
+                'stadium_id' => $stadium->id,
+                'match_date' => now()->addDays(21),
+                'base_price' => 60.0,
+                'competition' => 'La Liga',
+                'status' => 'scheduled',
+            ],
+        ];
 
-        // Initialize Match Seats
         $seats = Seat::all();
-        foreach ($seats as $seat) {
-            MatchSeat::create([
-                'match_id' => $match->id,
-                'seat_id' => $seat->id,
-                'status' => 'available',
-            ]);
+
+        foreach ($matches as $matchData) {
+            $match = FootballMatch::create($matchData);
+            
+            // Initialize Match Seats
+            foreach ($seats as $seat) {
+                MatchSeat::create([
+                    'match_id' => $match->id,
+                    'seat_id' => $seat->id,
+                    'status' => 'available',
+                ]);
+            }
         }
     }
 }
