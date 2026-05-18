@@ -159,7 +159,7 @@
         
         <div class="footer">
             ESTA ENTRADA ES PERSONAL E INTRANSFERIBLE &bull; PROHIBIDA LA REVENTA<br>
-            © LAB STOCKS &bull; ENTERPRISE TICKETING SOLUTIONS
+            © StadiumPass &bull; ENTERPRISE TICKETING SOLUTIONS
         </div>
     </div>
 </body>

@@ -102,7 +102,7 @@ defineProps({
                         </div>
                         <p class="text-slate-600 text-[8px] font-bold uppercase tracking-[0.4em] leading-loose">
                             ESTA ENTRADA ES PERSONAL E INTRANSFERIBLE · PROHIBIDA LA REVENTA <br/>
-                            © LAB STOCKS · ENTERPRISE TICKETING SOLUTIONS
+                            © StadiumPass · ENTERPRISE TICKETING SOLUTIONS
                         </p>
                     </div>
                 </div>

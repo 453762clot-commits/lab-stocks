@@ -72,7 +72,7 @@ const submit = () => {
                                 <div class="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center border border-emerald-500/30 text-emerald-400">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 </div>
-                                <h4 class="text-white font-bold uppercase tracking-tight text-sm">Garantía de Satisfacción LAB STOCKS</h4>
+                                <h4 class="text-white font-bold uppercase tracking-tight text-sm">Garantía de Satisfacción StadiumPass</h4>
                             </div>
                             <p class="text-slate-400 text-xs leading-loose italic">
                                 Al procesar este pago, aceptas los términos y condiciones de la plataforma. Tus entradas se generarán automáticamente y estarán disponibles en tu perfil. Se enviará una copia digital a tu dirección de correo electrónico vinculada: <span class="text-white font-bold">{{ $page.props.auth.user.email }}</span>.

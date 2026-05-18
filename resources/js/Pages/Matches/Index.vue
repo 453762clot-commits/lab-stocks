@@ -29,7 +29,7 @@ const filteredMatches = computed(() => {
         <template #header>
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end space-y-4 md:space-y-0">
                 <div>
-                    <p class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-1">Experiencia LAB Stocks</p>
+                    <p class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-1">Experiencia StadiumPass</p>
                     <h2 class="font-black text-4xl text-white leading-tight">
                         Próximos <span class="gradient-text">Eventos</span>
                     </h2>
