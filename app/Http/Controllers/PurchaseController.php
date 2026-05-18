@@ -72,10 +72,10 @@ class PurchaseController extends Controller
                 $finalPrice = $totalPrice - $discount;
 
                 $uuid = Str::uuid();
-                $qrPath = "qrcodes/{$uuid}.png";
+                $qrPath = "qrcodes/{$uuid}.svg";
                 
-                // Use PNG for better compatibility in views
-                $qrCode = QrCode::format('png')->size(300)->margin(1)->generate($uuid);
+                // Use SVG to avoid requiring the imagick PHP extension
+                $qrCode = QrCode::format('svg')->size(300)->margin(1)->generate($uuid);
                 Storage::disk('public')->put($qrPath, $qrCode);
 
                 $ticket = Ticket::create([
