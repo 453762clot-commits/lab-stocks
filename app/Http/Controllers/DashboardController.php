@@ -20,11 +20,19 @@ class DashboardController extends Controller
         $activeTicketsCount = Ticket::where('user_id', $user->id)
             ->where('status', 'valid')
             ->count();
+
+        // Get all active tickets for the user
+        $tickets = Ticket::with(['match.homeTeam', 'match.awayTeam', 'seat.sector'])
+            ->where('user_id', $user->id)
+            ->where('status', 'valid')
+            ->orderBy('created_at', 'desc')
+            ->get();
             
         return Inertia::render('Dashboard', [
             'userRank' => $rank,
             'activeTicketsCount' => $activeTicketsCount,
             'points' => $user->points,
+            'tickets' => $tickets,
         ]);
     }
 }

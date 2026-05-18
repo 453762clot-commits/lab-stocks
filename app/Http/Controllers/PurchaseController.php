@@ -96,7 +96,11 @@ class PurchaseController extends Controller
                 $tickets[] = $ticket;
             }
 
-            return redirect()->route('tickets.show', $tickets[0])->with('success', '¡Compra realizada con éxito! Se ha enviado una copia a tu correo.');
+            if (count($tickets) === 1) {
+                return redirect()->route('tickets.show', $tickets[0])->with('success', '¡Compra realizada con éxito! Se ha enviado una copia a tu correo.');
+            }
+
+            return redirect()->route('dashboard')->with('success', '¡Compra realizada con éxito! Tus ' . count($tickets) . ' entradas ya están disponibles abajo en tu panel.');
         });
     }
 

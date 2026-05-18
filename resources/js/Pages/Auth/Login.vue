@@ -78,7 +78,7 @@ const submit = () => {
                 </label>
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <div class="mt-4 flex items-center justify-between">
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
@@ -86,6 +86,7 @@ const submit = () => {
                 >
                     Forgot your password?
                 </Link>
+                <div v-else></div>
 
                 <PrimaryButton
                     class="ms-4"
@@ -94,6 +95,18 @@ const submit = () => {
                 >
                     Log in
                 </PrimaryButton>
+            </div>
+
+            <div class="mt-8 text-center border-t border-gray-100 dark:border-gray-800/50 pt-6">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    ¿No tienes una cuenta? 
+                    <Link
+                        :href="route('register')"
+                        class="ms-1 font-black text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 transition-colors focus:outline-none"
+                    >
+                        Regístrate aquí
+                    </Link>
+                </p>
             </div>
         </form>
     </GuestLayout>
