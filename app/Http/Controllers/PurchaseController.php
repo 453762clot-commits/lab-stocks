@@ -108,4 +108,20 @@ class PurchaseController extends Controller
             'ticket' => $ticket
         ]);
     }
+
+    public function downloadPdf(Ticket $ticket)
+    {
+        $ticket->load(['match.homeTeam', 'match.awayTeam', 'seat.sector', 'user']);
+        
+        $qrPath = storage_path('app/public/' . $ticket->qr_code_path);
+        $qrBase64 = '';
+        if (file_exists($qrPath)) {
+            $qrContent = file_get_contents($qrPath);
+            $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrContent);
+        }
+
+        $pdf = Pdf::loadView('pdf.ticket', compact('ticket', 'qrBase64'));
+        
+        return $pdf->download("ticket-{$ticket->uuid}.pdf");
+    }
 }

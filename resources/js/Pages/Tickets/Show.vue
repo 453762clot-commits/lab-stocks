@@ -91,10 +91,10 @@ defineProps({
                     
                     <div class="bg-white/5 p-8 text-center border-t border-white/5">
                         <div class="flex justify-center space-x-12 mb-6">
-                            <button class="text-blue-400 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors flex items-center space-x-2">
+                            <a :href="'/tickets/' + ticket.id + '/pdf'" class="text-blue-400 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors flex items-center space-x-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M7 10l5 5m0 0l5-5m-5 5V3"/></svg>
                                 <span>Descargar PDF</span>
-                            </button>
+                            </a>
                             <button class="text-blue-400 hover:text-white text-[10px] font-black uppercase tracking-widest transition-colors flex items-center space-x-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                                 <span>Añadir a Wallet</span>

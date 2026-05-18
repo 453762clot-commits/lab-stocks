@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/checkout', [PurchaseController::class, 'checkout'])->name('purchase.checkout');
     Route::post('/purchase', [PurchaseController::class, 'store'])->name('purchase.store');
     Route::get('/tickets/{ticket}', [PurchaseController::class, 'show'])->name('tickets.show');
+    Route::get('/tickets/{ticket}/pdf', [PurchaseController::class, 'downloadPdf'])->name('tickets.pdf');
 
     // Ranking
     Route::get('/ranking', [RankingController::class, 'index'])->name('ranking.index');
